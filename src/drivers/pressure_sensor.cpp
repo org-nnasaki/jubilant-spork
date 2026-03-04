@@ -122,18 +122,18 @@ Status PressureSensor::readCalibration() {
     Status s = i2c_.readRegisters(address_, REG_CALIB_START, buf, CALIB_SIZE);
     if (s != Status::Ok) return s;
 
-    calib_.dig_T1 = static_cast<uint16_t>(buf[0] | (buf[1] << 8));
-    calib_.dig_T2 = static_cast<int16_t>(static_cast<uint16_t>(buf[2] | (buf[3] << 8)));
-    calib_.dig_T3 = static_cast<int16_t>(static_cast<uint16_t>(buf[4] | (buf[5] << 8)));
-    calib_.dig_P1 = static_cast<uint16_t>(buf[6] | (buf[7] << 8));
-    calib_.dig_P2 = static_cast<int16_t>(static_cast<uint16_t>(buf[8] | (buf[9] << 8)));
-    calib_.dig_P3 = static_cast<int16_t>(static_cast<uint16_t>(buf[10] | (buf[11] << 8)));
-    calib_.dig_P4 = static_cast<int16_t>(static_cast<uint16_t>(buf[12] | (buf[13] << 8)));
-    calib_.dig_P5 = static_cast<int16_t>(static_cast<uint16_t>(buf[14] | (buf[15] << 8)));
-    calib_.dig_P6 = static_cast<int16_t>(static_cast<uint16_t>(buf[16] | (buf[17] << 8)));
-    calib_.dig_P7 = static_cast<int16_t>(static_cast<uint16_t>(buf[18] | (buf[19] << 8)));
-    calib_.dig_P8 = static_cast<int16_t>(static_cast<uint16_t>(buf[20] | (buf[21] << 8)));
-    calib_.dig_P9 = static_cast<int16_t>(static_cast<uint16_t>(buf[22] | (buf[23] << 8)));
+    calib_.dig_T1 = static_cast<uint16_t>(buf[0] | (static_cast<uint16_t>(buf[1]) << 8U));
+    calib_.dig_T2 = static_cast<int16_t>(static_cast<uint16_t>(buf[2] | (static_cast<uint16_t>(buf[3]) << 8U)));
+    calib_.dig_T3 = static_cast<int16_t>(static_cast<uint16_t>(buf[4] | (static_cast<uint16_t>(buf[5]) << 8U)));
+    calib_.dig_P1 = static_cast<uint16_t>(buf[6] | (static_cast<uint16_t>(buf[7]) << 8U));
+    calib_.dig_P2 = static_cast<int16_t>(static_cast<uint16_t>(buf[8] | (static_cast<uint16_t>(buf[9]) << 8U)));
+    calib_.dig_P3 = static_cast<int16_t>(static_cast<uint16_t>(buf[10] | (static_cast<uint16_t>(buf[11]) << 8U)));
+    calib_.dig_P4 = static_cast<int16_t>(static_cast<uint16_t>(buf[12] | (static_cast<uint16_t>(buf[13]) << 8U)));
+    calib_.dig_P5 = static_cast<int16_t>(static_cast<uint16_t>(buf[14] | (static_cast<uint16_t>(buf[15]) << 8U)));
+    calib_.dig_P6 = static_cast<int16_t>(static_cast<uint16_t>(buf[16] | (static_cast<uint16_t>(buf[17]) << 8U)));
+    calib_.dig_P7 = static_cast<int16_t>(static_cast<uint16_t>(buf[18] | (static_cast<uint16_t>(buf[19]) << 8U)));
+    calib_.dig_P8 = static_cast<int16_t>(static_cast<uint16_t>(buf[20] | (static_cast<uint16_t>(buf[21]) << 8U)));
+    calib_.dig_P9 = static_cast<int16_t>(static_cast<uint16_t>(buf[22] | (static_cast<uint16_t>(buf[23]) << 8U)));
 
     return Status::Ok;
 }
