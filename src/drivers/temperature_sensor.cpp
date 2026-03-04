@@ -129,9 +129,8 @@ Status TemperatureSensor::readCalibration() {
     cal_.dig_P8 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[20] | (tpBuf[21] << 8)));
     cal_.dig_P9 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[22] | (tpBuf[23] << 8)));
 
-    // Read humidity calibration H1 (0xA1, 1 byte)
-    s = i2c_.readRegister(address_, REG_CALIB_HUM_H1, cal_.dig_H1);
-    if (s != Status::Ok) return s;
+    // dig_H1 is at 0xA1 (tpBuf[25], byte 25 of the 26-byte burst 0x88..0xA1)
+    cal_.dig_H1 = tpBuf[25];
 
     // Read humidity calibration H2..H6 (0xE1..0xE7, 7 bytes)
     uint8_t hBuf[CALIB_HUM_LENGTH] = {};
