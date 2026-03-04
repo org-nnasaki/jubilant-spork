@@ -53,13 +53,11 @@ protected:
             0x8C, 0x3C,  // dig_P7 = 15500
             0xF8, 0xC6,  // dig_P8 = -14600
             0x70, 0x17,  // dig_P9 = 6000
+            0x00,        // reserved (0xA0)
+            0x4B,        // dig_H1 = 75 (0xA1)
         };
         EXPECT_CALL(i2c_, readRegisters(ADDR, TemperatureSensor::REG_CALIB_TEMP_PRESS, _, 26))
             .WillOnce(DoAll(SetArrayArgument<2>(tpCal, tpCal + 26), Return(Status::Ok)));
-
-        // Humidity H1 (0xA1): dig_H1 = 75
-        EXPECT_CALL(i2c_, readRegister(ADDR, TemperatureSensor::REG_CALIB_HUM_H1, _))
-            .WillOnce(DoAll(SetArgReferee<2>(uint8_t{75}), Return(Status::Ok)));
 
         // Humidity H2..H6 (0xE1, 7 bytes)
         // dig_H2=370, dig_H3=0, dig_H4=306, dig_H5=57, dig_H6=30
