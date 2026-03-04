@@ -62,7 +62,7 @@ protected:
             .WillOnce(DoAll(SetArgReferee<2>(uint8_t{75}), Return(Status::Ok)));
 
         // Humidity H2..H6 (0xE1, 7 bytes)
-        // dig_H2=370, dig_H3=0, dig_H4=313, dig_H5=50, dig_H6=30
+        // dig_H2=370, dig_H3=0, dig_H4=306, dig_H5=57, dig_H6=30
         static const uint8_t hCal[7] = {
             0x72, 0x01,  // dig_H2 = 370
             0x00,        // dig_H3 = 0
@@ -283,4 +283,51 @@ TEST_F(TemperatureSensorTest, Reset_ClearsInitialized) {
     // After reset, reads should fail with NotInitialized
     float temp = 0;
     EXPECT_EQ(sensor_.readTemperature(temp), Status::NotInitialized);
+}
+
+// ─── ctrl_hum ordering ────────────────────────────────────────────────────────
+
+TEST_F(TemperatureSensorTest, Init_CtrlHumWrittenBeforeCtrlMeas) {
+    expectChipIdRead();
+    expectCalibration();
+
+    // BME280 datasheet requires ctrl_hum to be written before ctrl_meas
+    // for humidity oversampling changes to take effect
+    {
+        ::testing::InSequence seq;
+        EXPECT_CALL(i2c_, writeRegister(ADDR, TemperatureSensor::REG_CTRL_HUM, 0x01))
+            .WillOnce(Return(Status::Ok));
+        EXPECT_CALL(i2c_, writeRegister(ADDR, TemperatureSensor::REG_CTRL_MEAS, 0x27))
+            .WillOnce(Return(Status::Ok));
+        EXPECT_CALL(i2c_, writeRegister(ADDR, TemperatureSensor::REG_CONFIG, 0x00))
+            .WillOnce(Return(Status::Ok));
+    }
+
+    EXPECT_EQ(sensor_.init(), Status::Ok);
+}
+
+// ─── Double init ──────────────────────────────────────────────────────────────
+
+TEST_F(TemperatureSensorTest, Init_CalledTwice_Succeeds) {
+    initSuccessfully();
+
+    // Second init should also succeed (idempotent)
+    expectChipIdRead();
+    expectCalibration();
+    expectConfigWrites();
+    EXPECT_EQ(sensor_.init(), Status::Ok);
+
+    // Sensor should still work after re-init
+    static const uint8_t data[8] = {
+        0x50, 0x00, 0x00,
+        0x7E, 0xF5, 0x00,
+        0x80, 0x00,
+    };
+    EXPECT_CALL(i2c_, readRegisters(ADDR, TemperatureSensor::REG_DATA_START, _, 8))
+        .WillOnce(DoAll(SetArrayArgument<2>(data, data + 8), Return(Status::Ok)));
+
+    float temp = 0.0f;
+    EXPECT_EQ(sensor_.readTemperature(temp), Status::Ok);
+    EXPECT_GT(temp, -40.0f);
+    EXPECT_LT(temp, 85.0f);
 }
