@@ -115,19 +115,19 @@ Status TemperatureSensor::readCalibration() {
     Status s = i2c_.readRegisters(address_, REG_CALIB_TEMP_PRESS, tpBuf, CALIB_TP_LENGTH);
     if (s != Status::Ok) return s;
 
-    cal_.dig_T1 = static_cast<uint16_t>(tpBuf[0]  | (tpBuf[1]  << 8));
-    cal_.dig_T2 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[2]  | (tpBuf[3]  << 8)));
-    cal_.dig_T3 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[4]  | (tpBuf[5]  << 8)));
+    cal_.dig_T1 = static_cast<uint16_t>(tpBuf[0]  | (static_cast<uint16_t>(tpBuf[1])  << 8U));
+    cal_.dig_T2 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[2]  | (static_cast<uint16_t>(tpBuf[3])  << 8U)));
+    cal_.dig_T3 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[4]  | (static_cast<uint16_t>(tpBuf[5])  << 8U)));
 
-    cal_.dig_P1 = static_cast<uint16_t>(tpBuf[6]  | (tpBuf[7]  << 8));
-    cal_.dig_P2 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[8]  | (tpBuf[9]  << 8)));
-    cal_.dig_P3 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[10] | (tpBuf[11] << 8)));
-    cal_.dig_P4 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[12] | (tpBuf[13] << 8)));
-    cal_.dig_P5 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[14] | (tpBuf[15] << 8)));
-    cal_.dig_P6 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[16] | (tpBuf[17] << 8)));
-    cal_.dig_P7 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[18] | (tpBuf[19] << 8)));
-    cal_.dig_P8 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[20] | (tpBuf[21] << 8)));
-    cal_.dig_P9 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[22] | (tpBuf[23] << 8)));
+    cal_.dig_P1 = static_cast<uint16_t>(tpBuf[6]  | (static_cast<uint16_t>(tpBuf[7])  << 8U));
+    cal_.dig_P2 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[8]  | (static_cast<uint16_t>(tpBuf[9])  << 8U)));
+    cal_.dig_P3 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[10] | (static_cast<uint16_t>(tpBuf[11]) << 8U)));
+    cal_.dig_P4 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[12] | (static_cast<uint16_t>(tpBuf[13]) << 8U)));
+    cal_.dig_P5 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[14] | (static_cast<uint16_t>(tpBuf[15]) << 8U)));
+    cal_.dig_P6 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[16] | (static_cast<uint16_t>(tpBuf[17]) << 8U)));
+    cal_.dig_P7 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[18] | (static_cast<uint16_t>(tpBuf[19]) << 8U)));
+    cal_.dig_P8 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[20] | (static_cast<uint16_t>(tpBuf[21]) << 8U)));
+    cal_.dig_P9 = static_cast<int16_t>(static_cast<uint16_t>(tpBuf[22] | (static_cast<uint16_t>(tpBuf[23]) << 8U)));
 
     // Read humidity calibration H1 (0xA1, 1 byte)
     s = i2c_.readRegister(address_, REG_CALIB_HUM_H1, cal_.dig_H1);
@@ -138,7 +138,7 @@ Status TemperatureSensor::readCalibration() {
     s = i2c_.readRegisters(address_, REG_CALIB_HUM_H2, hBuf, CALIB_HUM_LENGTH);
     if (s != Status::Ok) return s;
 
-    cal_.dig_H2 = static_cast<int16_t>(static_cast<uint16_t>(hBuf[0] | (hBuf[1] << 8)));
+    cal_.dig_H2 = static_cast<int16_t>(static_cast<uint16_t>(hBuf[0] | (static_cast<uint16_t>(hBuf[1]) << 8U)));
     cal_.dig_H3 = hBuf[2];
     // dig_H4: (0xE4 << 4) | (0xE5 & 0x0F)
     cal_.dig_H4 = static_cast<int16_t>(static_cast<int16_t>(static_cast<int8_t>(hBuf[3])) * 16 |
