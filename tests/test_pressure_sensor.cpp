@@ -285,6 +285,18 @@ TEST_F(PressureSensorTest, SetMode_Success) {
     EXPECT_EQ(sensor_.setMode(PressureSensor::MODE_SLEEP), Status::Ok);
 }
 
+TEST_F(PressureSensorTest, SetMode_Forced2_Success) {
+    initSuccessfully();
+
+    // Read current ctrl_meas (0x27), mask out mode bits and OR in MODE_FORCED2 (0x02): (0x27 & 0xFC) | 0x02 = 0x26
+    EXPECT_CALL(i2c_, readRegister(ADDR, PressureSensor::REG_CTRL_MEAS, _))
+        .WillOnce(DoAll(SetArgReferee<2>(uint8_t{0x27}), Return(Status::Ok)));
+    EXPECT_CALL(i2c_, writeRegister(ADDR, PressureSensor::REG_CTRL_MEAS, 0x26))
+        .WillOnce(Return(Status::Ok));
+
+    EXPECT_EQ(sensor_.setMode(PressureSensor::MODE_FORCED2), Status::Ok);
+}
+
 TEST_F(PressureSensorTest, SetMode_InvalidParam) {
     initSuccessfully();
     EXPECT_EQ(sensor_.setMode(0x04), Status::InvalidParam);

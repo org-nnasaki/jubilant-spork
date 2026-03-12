@@ -28,6 +28,7 @@ public:
     // Power modes
     static constexpr uint8_t MODE_SLEEP     = 0x00;
     static constexpr uint8_t MODE_FORCED    = 0x01;
+    static constexpr uint8_t MODE_FORCED2   = 0x02;
     static constexpr uint8_t MODE_NORMAL    = 0x03;
 
     // Default ctrl_meas: osrs_t=×1 (001), osrs_p=×1 (001), mode=normal (11)
